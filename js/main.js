@@ -40,9 +40,17 @@ const searchShadowEl = headerEl.querySelector(".shadow");
 const searchInputEl = searchWrapEl.querySelector("input");
 const searchDelayEls = [...searchWrapEl.querySelectorAll("li")];
 
+const playScroll = () => {
+  document.documentElement.classList.remove("fixed");
+};
+
+const stopScroll = () => {
+  document.documentElement.classList.add("fixed");
+};
+
 const showSearch = () => {
   headerEl.classList.add("searching");
-  document.documentElement.classList.add("fixed");
+  stopScroll();
 
   headerMenuEls.reverse().forEach((el, index) => {
     el.style.transitionDelay = (index * 0.4) / headerMenuEls.length + "s";
@@ -59,7 +67,7 @@ const showSearch = () => {
 
 const hideSearch = () => {
   headerEl.classList.remove("searching");
-  document.documentElement.classList.remove("fixed");
+  playScroll();
 
   headerMenuEls.reverse().forEach((el, index) => {
     el.style.transitionDelay = (index * 0.4) / headerMenuEls.length + "s";
@@ -74,8 +82,46 @@ const hideSearch = () => {
 };
 
 searchStarterEl.addEventListener("click", showSearch);
-searchCloserEl.addEventListener("click", hideSearch);
+searchCloserEl.addEventListener("click", (event) => {
+  event.stopPropagation();
+  hideSearch();
+});
 searchShadowEl.addEventListener("click", hideSearch);
+
+// 헤더 메뉴 토글
+const menuStarterEl = document.querySelector("header .menu-starter");
+menuStarterEl.addEventListener("click", () => {
+  if (headerEl.classList.contains("menuing")) {
+    headerEl.classList.remove("menuing");
+    searchInputEl.value = "";
+    playScroll();
+  } else {
+    headerEl.classList.add("menuing");
+    stopScroll();
+  }
+});
+
+// 헤더 검색
+const searchTextFieldEl = document.querySelector("header .textfield");
+const searchCancelEl = document.querySelector("header .search-canceler");
+
+searchTextFieldEl.addEventListener("click", () => {
+  headerEl.classList.add("searching--mobile");
+  searchInputEl.focus();
+});
+
+searchCancelEl.addEventListener("click", () => {
+  headerEl.classList.remove("searching--mobile");
+});
+
+// 화면 크기가 달라졌을 때 검색 모드가 종료되도록 처리
+window.addEventListener("resize", () => {
+  if (window.innerWidth <= 740) {
+    headerEl.classList.remove("searching");
+  } else {
+    headerEl.classList.remove("searching--mobile");
+  }
+});
 
 // 요소의 가시성 관찰
 const io = new IntersectionObserver((entries) => {
@@ -162,5 +208,6 @@ navigations.forEach((nav) => {
   navigationsEl.append(mapEl);
 });
 
+// 현재 연도 출력
 const thisYearEl = document.querySelector("span.this-year");
 thisYearEl.textContent = new Date().getFullYear();
