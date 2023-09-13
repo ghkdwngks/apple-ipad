@@ -212,7 +212,7 @@ ipads.forEach((ipad) => {
   itemsEl.append(itemEl);
 });
 
-// 'navigations' 랜더링
+// footer navigation map 랜더링
 const navigationsEl = document.querySelector("footer .navigations");
 navigations.forEach((nav) => {
   const mapEl = document.createElement("div");
@@ -239,11 +239,11 @@ navigations.forEach((nav) => {
   navigationsEl.append(mapEl);
 });
 
-// 현재 연도 출력
+// 올해 연도 적용
 const thisYearEl = document.querySelector("span.this-year");
 thisYearEl.textContent = new Date().getFullYear();
 
-//
+// footer navigation map 아코디언
 const mapEls = document.querySelectorAll("footer .navigations .map");
 
 mapEls.forEach((el) => {
